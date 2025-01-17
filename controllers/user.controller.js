@@ -122,3 +122,26 @@ export const loginUserController = async (req, res) => {
     });
   }
 };
+
+export const logOutController = async (req,res) => {
+    try {
+        const loggedInUser = req.user
+
+        res.cookie("accessToken",null,{
+            expiresIn : '0h'
+        })
+
+        return res.json({
+            message : `${loggedInUser.name} is logged out`,
+            error : false,
+            success : true
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: false,
+          });
+    }
+    
+}
