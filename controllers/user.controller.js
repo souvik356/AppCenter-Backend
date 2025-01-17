@@ -54,7 +54,7 @@ export const registerUserController = async (req, res) => {
     const savedData = await user.save();
 
     return res.json({
-      message: "user registered successfully",
+      message: `user is registered successfully`,
       data: savedData,
       success: true,
       error: false,
@@ -109,7 +109,7 @@ export const loginUserController = async (req, res) => {
 
  
     return res.json({
-        message: 'Logged in successfull',
+        message: `${userInDb.name} is Logged in successfull`,
         error: false,
         success: true
     })
@@ -127,9 +127,7 @@ export const logOutController = async (req,res) => {
     try {
         const loggedInUser = req.user
 
-        res.cookie("accessToken",null,{
-            expiresIn : '0h'
-        })
+        res.clearCookie("accessToken")
 
         return res.json({
             message : `${loggedInUser.name} is logged out`,
@@ -137,7 +135,7 @@ export const logOutController = async (req,res) => {
             success : true
         })
     } catch (error) {
-        return res.status(500).json({
+        return res.status(500).json({ 
             message: error.message || error,
             error: true,
             success: false,
