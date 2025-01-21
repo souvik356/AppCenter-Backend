@@ -3,12 +3,22 @@ import connectDb from '../Database/Database.js';
 import dotenv from 'dotenv'
 import userRouter from '../routers/user.router.js';
 import cookieParser from 'cookie-parser';
+import cors from 'cors'
+
 dotenv.config()
 
     const app = express()
 
+    app.use(cors({
+        credentials: true,
+        origin: process.env.FRONTEND_URL,
+        allowedHeaders: ['Content-Type', 'Authorization'],
+        methods :['GET','PATCH','PUT','DELETE','POST'],
+        exposedHeaders: ['Authorization'] 
+    }))
+
     app.use(express.json())
-    app.use(cookieParser())
+    app.use(cookieParser()) 
 
     app.use('/api/user',userRouter)
 

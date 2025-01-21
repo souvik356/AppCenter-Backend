@@ -91,7 +91,7 @@ export const loginUserController = async (req, res) => {
     // console.log(userInDb.password);
 
     const isPasswordValid = await bcrypt.compare(password,userInDb.password)
-    console.log("is password valid",isPasswordValid);
+    // console.log("is password valid",isPasswordValid);
 
     if(!isPasswordValid){
         return res.status(400).json({
@@ -111,6 +111,7 @@ export const loginUserController = async (req, res) => {
     return res.json({
         message: `${userInDb.name} is Logged in successfull`,
         error: false,
+        data : token,
         success: true
     })
 
@@ -142,4 +143,4 @@ export const logOutController = async (req,res) => {
           });
     }
     
-}
+} 
