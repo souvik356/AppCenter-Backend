@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 import userRouter from '../routers/user.router.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors'
+import applicationRouter from '../routers/application.router.js';
 
 dotenv.config()
 
@@ -21,6 +22,7 @@ dotenv.config()
     app.use(cookieParser()) 
 
     app.use('/api/user',userRouter)
+    app.use('/api/app',applicationRouter)
 
 
 

@@ -14,7 +14,7 @@ const applicationSchema = mongoose.Schema({
     releaseType : {
         type: String,
         validate(value){
-            if(!['alpha', 'beta', 'enterprise','custom', 'production', 'store'].includes(value)){
+            if(!["Alpha","Beta","Enterprise","Production","Store"].includes(value)){
                throw new Error('Invalid release type')
             }
         }

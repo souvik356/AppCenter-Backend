@@ -1,6 +1,11 @@
-import mongoose, { version } from "mongoose";
+import mongoose, { Schema, version } from "mongoose";
 
 const relaseSchema = mongoose.Schema({
+    applicationId :{
+        type: Schema.Types.ObjectId,
+        ref: 'Application',
+        required :true
+    },
     build:{
         type: String,
         required: true,
