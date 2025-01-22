@@ -101,7 +101,7 @@ export const loginUserController = async (req, res) => {
           });
     }
 
-    const token = await jwt.sign({userId : userInDb._id},process.env.SECRET_KEY)
+    const token = await jwt.sign({userId : userInDb._id},process.env.SECRET_KEY)    // code for generating token
 
     res.cookie('accessToken',token,{
         expiresIn : '7d'

@@ -5,6 +5,7 @@ import userRouter from '../routers/user.router.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors'
 import applicationRouter from '../routers/application.router.js';
+import uploadFileRouter from '../routers/upload.route.js';
 
 dotenv.config()
 
@@ -22,14 +23,16 @@ dotenv.config()
     app.use(cookieParser()) 
 
     app.use('/api/user',userRouter)
-    app.use('/api/app',applicationRouter)
+    app.use('/api/app',applicationRouter)  
+    // app.use('/api/release',releaseRouter)
+    // app.use('/api/file',uploadFileRouter)
 
 
 
     connectDb().then(()=>{
        console.log("Database connected successfully");
        app.listen(process.env.PORT_NUMBER,()=>{
-        console.log(`Server is connected to ${process.env.PORT_NUMBER}`);
+        console.log(`Server is connected to ${process.env.PORT_NUMBER || 3001}`);
        })
     }).catch((error)=>{
      console.log(error.message || error);

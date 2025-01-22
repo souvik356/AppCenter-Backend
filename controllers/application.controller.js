@@ -1,4 +1,5 @@
 import ApplicationModel from "../models/Application.js"
+import UserModel from "../models/User.js"
 
 export const registerApplication = async (req,res) => {
     try {
@@ -43,6 +44,11 @@ export const registerApplication = async (req,res) => {
     })
 
     const saveAppData = await appData.save()
+
+    await UserModel.findByIdAndUpdate(loggedInUser._id,
+        { $push: {applications : saveAppData._id}},
+        { new :true }
+    )
 
     return res.json({
         message : "Application is saved successfully",
