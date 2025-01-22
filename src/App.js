@@ -25,7 +25,7 @@ dotenv.config()
     app.use('/api/user',userRouter)
     app.use('/api/app',applicationRouter)  
     // app.use('/api/release',releaseRouter)
-    // app.use('/api/file',uploadFileRouter)
+    app.use('/api/file',uploadFileRouter)
 
 
 

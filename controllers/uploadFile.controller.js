@@ -1,4 +1,4 @@
-import uploadFileFirebase from "../utils/uploadFileFirebase.js";
+import uploadFileBucket from "../utils/uploadFileBucket.js";
 
 const uploadFileController = async(req,res)=>{
     try {
@@ -13,7 +13,7 @@ const uploadFileController = async(req,res)=>{
         });
     }
   
-      const uploadFile = await uploadFileFirebase(file)
+      const uploadFile = await uploadFileBucket(file)
       console.log("upload file",uploadFile);
       
       
