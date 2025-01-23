@@ -1,10 +1,11 @@
-// import express from 'express'
-// import UserAuth from '../middleware/UserAuth.js'
-// import { createRelease } from '../controllers/release.controller.js'
+import express from 'express'
+import UserAuth from '../middleware/UserAuth.js'
+import { createRelease, getRelease } from '../controllers/release.controller.js'
 
-// const releaseRouter = express.Router()
+const releaseRouter = express.Router()
 
 
-// releaseRouter.post('/registerRelease',UserAuth, upload.single('build'),createRelease)
+releaseRouter.post('/registerRelease/:appId',UserAuth,createRelease)
+releaseRouter.get('/getRelease/:appId',UserAuth,getRelease)
 
-// export default releaseRouter  
+export default releaseRouter  

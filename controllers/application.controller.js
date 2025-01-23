@@ -69,7 +69,7 @@ export const getApplication = async (req,res) => {
     try {
         const loggedInUser = req.user
         // console.log(loggedInUser)
-        const application = await ApplicationModel.find({user : loggedInUser._id})
+        const application = await ApplicationModel.find({user : loggedInUser._id}).populate("user","name email")
 
         return res.json({
             message : "All application are here :-",

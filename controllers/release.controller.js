@@ -1,71 +1,90 @@
-import ReleaseModel from '../models/Release.js'; // Assuming you have a Release model
-import ApplicationModel from '../models/Application.js'; // Assuming you have an Application model
-import { upload } from '../utils/uploadFileCloudinary.js';
+import ApplicationModel from '../models/Application.js';
+import ReleaseModel from '../models/Release.js'
+import validateApp from '../utils/validateApp.js';
 
 export const createRelease = async (req, res) => {
     try {
-        // Use the multer upload middleware to handle the file upload
-        const uploadFile = upload.single('build'); // 'build' is the key for file in form-data
+        const { build,version,releaseNote } = req.body
         
-        uploadFile(req, res, async (err) => {
-            if (err) {
-                return res.status(400).json({ message: "File upload error", error: err.message });
-            }
+        const appId = req.params.appId
 
-            // Once the file is uploaded to Cloudinary, retrieve the file's URL
-            const buildFileUrl = req.file.path; // Cloudinary URL of the uploaded file
-            const { appName, releaseType, version, buildNumber, releaseNote, applicationId } = req.body;
+    if(!build || !version || !releaseNote){
+        return res.status(400).json({
+            message : "provide all fields",
+            error : true,
+            success : false
+        })
+    }
 
-            // Validation to make sure required fields are provided
-            if (!appName || !releaseType || !version || !buildNumber || !releaseNote || !applicationId) {
-                return res.status(400).json({
-                    message: "Please provide all required fields",
-                    success: false,
-                    error: true,
-                });
-            }
+    const validateUrl = validateApp(build)
 
-            // Create a new Release object with the data
-            const newRelease = new ReleaseModel({
-                appName,
-                releaseType,
-                version,
-                buildNumber,
-                releaseNote,
-                build: buildFileUrl, // Store the Cloudinary file URL
-            });
+    if(!validateUrl){
+        return res.status(400).json({
+            message : "invalid file",
+            error : true,
+            success : false
+        })
+    }
 
-            // Save the new release to the database
-            const savedRelease = await newRelease.save();
+    const lastRelease = await ReleaseModel.findOne({applicationId: appId}).sort({buildNumber :-1}).exec()
 
-            // After saving the release, update the related Application to add the new release to the 'releases' array
-            const application = await ApplicationModel.findById(applicationId);
-            if (!application) {
-                return res.status(404).json({
-                    message: "Application not found",
-                    success: false,
-                    error: true,
-                });
-            }
+    const buildNumber = lastRelease ? lastRelease.buildNumber + 1 : 1
 
-            // Add the new release to the application's releases array
-            application.releases.push(savedRelease._id);
-            await application.save();
+    const release = new ReleaseModel({
+        build,
+        version,
+        buildNumber,
+        releaseNote,
+        applicationId : appId
+    })
 
-            return res.status(200).json({
-                message: "Release created and associated with application successfully",
-                data: savedRelease,
-                success: true,
-                error: false,
-            });
-        });
+    const releaseData = await release.save()
+
+    await ApplicationModel.findByIdAndUpdate(appId,{ $push : {release : releaseData._id}},{ new: true })
+
+    return res.json({
+        message : "Releases are uploaded",
+        data: releaseData,
+        success : true,
+        error : false
+    })
 
     } catch (error) {
-        console.error(error);
-        res.status(500).json({
-            message: error.message || "Internal server error",
-            success: false,
-            error: true,
-        });
+        return res.status(500).json({
+            message : error.message || error,
+            error : true,
+            success : false
+        })
     }
+
 };
+
+export const getRelease = async (req,res) => {
+    try {
+        const appId = req.params.appId
+        // console.log(appId)
+        if(!appId){
+            return res.status(400).json({
+                message: 'provide appId',
+                error : true,
+                success : false
+            })
+        }
+
+        const release = await ReleaseModel.find({applicationId : appId})
+
+        return res.json({
+            message : "All the releases are below",
+            data: release,
+            error : false,
+            success : true
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message || error,
+            error : true,
+            success : false
+        })
+    }
+}

@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors'
 import applicationRouter from '../routers/application.router.js';
 import uploadFileRouter from '../routers/upload.route.js';
+import releaseRouter from '../routers/release.router.js';
 
 dotenv.config()
 
@@ -24,7 +25,7 @@ dotenv.config()
 
     app.use('/api/user',userRouter)
     app.use('/api/app',applicationRouter)  
-    // app.use('/api/release',releaseRouter)
+    app.use('/api/release',releaseRouter)
     app.use('/api/file',uploadFileRouter)
 
 

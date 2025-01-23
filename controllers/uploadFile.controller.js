@@ -3,7 +3,7 @@ import uploadFileBucket from "../utils/uploadFileBucket.js";
 const uploadFileController = async(req,res)=>{
     try {
       const file = req.file
-      console.log(file);
+      // console.log(file);
 
       if (!file) {
         return res.status(400).json({
@@ -14,8 +14,7 @@ const uploadFileController = async(req,res)=>{
     }
   
       const uploadFile = await uploadFileBucket(file)
-      console.log("upload file",uploadFile);
-      
+      // console.log("upload file",uploadFile);
       
       return res.json({
         message : 'file uploaded successfully',
@@ -23,7 +22,7 @@ const uploadFileController = async(req,res)=>{
         success : true,
         error: false
       })
-      
+
     } catch (error) {
       return res.status(500).json({
           message : error.message || error,

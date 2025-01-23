@@ -106,7 +106,6 @@ export const loginUserController = async (req, res) => {
     res.cookie('accessToken',token,{
         expiresIn : '7d'
     })
-
  
     return res.json({
         message: `${userInDb.name} is Logged in successfull`,
