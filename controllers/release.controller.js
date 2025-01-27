@@ -88,3 +88,47 @@ export const getRelease = async (req,res) => {
         })
     }
 }
+
+export const deleteRelease = async(req,res) =>{
+    try {
+        const releaseId = req.body
+
+        if(!releaseId){
+            return res.status(400).json({
+                message : "please provide releaseId",
+                error : true,
+                success : false
+            })
+        }
+
+        const isReleaseIdInDb = await ReleaseModel.findById(releaseId)
+
+        if(!isReleaseIdInDb){
+            return res.status(400).json({
+                message : "invalid releaseId",
+                error : true,
+                success : false
+            })
+        }
+
+       const deleteRelease = await ReleaseModel.findByIdAndDelete(releaseId)
+
+       return res.json({
+        message : "release deleted successfully",
+        data : deleteRelease,
+        success : true,
+        error : false
+       })
+
+    } catch (error) {
+        return res.status(500).json({
+            message : error.message || error,
+            error : true,
+            success : false
+        })
+    }
+}
+
+
+// delete for application 
+// delete for release

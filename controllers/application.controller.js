@@ -85,3 +85,50 @@ export const getApplication = async (req,res) => {
         })
     }
 }
+
+export const deleteApplication = async (req,res) => {
+    try {
+        const appId = req.body
+        if(!appId){
+            return res.status(400).json({
+                message : "please provide appId",
+                success : false,
+                error : true
+            })
+        }
+
+        const checkInDb = await ApplicationModel.findById(appId)
+
+        if(!checkInDb){
+            return res.status(400).json({
+                message : "Application not found",
+                success : false,
+                error : true
+            })
+        }
+
+        if(!(checkInDb.release.length === 0)){
+            return res.status(400).json({
+                message : "Please delete the releases then drop the application",
+                success : false,
+                error : true
+            })
+        }
+
+        const deleteApplication = await ApplicationModel.findByIdAndDelete(appId)
+
+        return res.json({
+            message : "Application deleted successfully",
+            data : deleteApplication,
+            success : true,
+            error : false
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            message : error.message || error,
+            success : false,
+            error : true
+        })
+    }
+}
