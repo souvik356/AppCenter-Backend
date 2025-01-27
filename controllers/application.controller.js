@@ -27,7 +27,7 @@ export const registerApplication = async (req,res) => {
             error : true
         })
     }
-    if(!['jave','kotlin','react-native'].includes(platformType)){
+    if(!['java','kotlin','react-native'].includes(platformType)){
         return res.status(400).json({
             message : "Invalid platform type",
             success : false,
