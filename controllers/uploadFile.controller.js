@@ -1,35 +1,45 @@
-import uploadFileBucket from "../utils/uploadFileBucket.js";
+import uploadFileLocal from "../utils/uploadFileLocal.js";
+import dotenv from 'dotenv'
+dotenv.config()
 
-const uploadFileController = async(req,res)=>{
-    try {
-      const file = req.file
-      // console.log(file);
+const uploadFileController = async (req, res) => {
+  try {
+    const file = req.file;
 
-      if (!file) {
-        return res.status(400).json({
-            message: 'No file uploaded',
-            error: true,
-            success: false
-        });
+    // Check if file exists
+    if (!file) {
+      return res.status(400).json({
+        message: 'No file uploaded',
+        error: true,
+        success: false,
+      });
     }
-  
-      const uploadFile = await uploadFileBucket(file)
-      // console.log("upload file",uploadFile);
-      
-      return res.json({
-        message : 'file uploaded successfully',
-        data: uploadFile,
-        success : true,
-        error: false
-      })
 
-    } catch (error) {
-      return res.status(500).json({
-          message : error.message || error,
-          error: true,
-          success : true
-      })
-    }
+    // Call your local upload function
+    const uploadedFile = await uploadFileLocal(file);
+
+    // Construct the file URL
+    const fileUrl = `${process.env.BACKEND_URL || 'http://localhost:8000'}/uploads/${file.originalname}`;
+
+    // Return success response
+    return res.json({
+      message: 'File uploaded successfully',
+      data:  fileUrl ,
+      success: true,
+      error: false,
+    });
+
+  } catch (error) {
+    // Log the error for debugging
+    console.error('Error uploading file:', error);
+
+    // Return error response
+    return res.status(500).json({
+      message: error.message || 'Internal server error',
+      error: true,
+      success: false,
+    });
   }
-  
-  export default uploadFileController
+};
+
+export default uploadFileController;

@@ -15,6 +15,17 @@ const releaseSchema = mongoose.Schema({
   releaseNote: {
       type: String
   },
+  fileSize:{ 
+      type : Number
+  },
+  fileExtension :{
+      type : String,
+      validate(value){
+        if(!['.apk','.abb','.ipa'].includes(value)){
+            throw new Error('invalid file extension')
+        }
+      }
+  },
   applicationId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Application',

@@ -30,7 +30,7 @@ const applicationSchema = mongoose.Schema({
     platformType : {
         type: String,
         validate(value){
-            if(!['jave','kotlin','react-native'].includes(value)){
+            if(!['java','kotlin','react-native'].includes(value)){
                 throw new Error('invalid platform type')
             }
         }

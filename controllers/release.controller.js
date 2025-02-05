@@ -4,7 +4,7 @@ import validateApp from '../utils/validateApp.js';
 
 export const createRelease = async (req, res) => {
     try {
-        const { build,version,releaseNote } = req.body
+        const { build,version,releaseNote,fileSize,fileExtension } = req.body
         
         const appId = req.params.appId
 
@@ -35,12 +35,15 @@ export const createRelease = async (req, res) => {
         version,
         buildNumber,
         releaseNote,
-        applicationId : appId
+        applicationId : appId,
+        fileSize,
+        fileExtension
     })
 
     const releaseData = await release.save()
 
     await ApplicationModel.findByIdAndUpdate(appId,{ $push : {release : releaseData._id}},{ new: true })
+    
 
     return res.json({
         message : "Releases are uploaded",
@@ -102,7 +105,7 @@ export const deleteRelease = async(req,res) =>{
         }
 
         const isReleaseIdInDb = await ReleaseModel.findById(releaseId)
-
+        console.log('releaseId',isReleaseIdInDb._id);
         if(!isReleaseIdInDb){
             return res.status(400).json({
                 message : "invalid releaseId",
@@ -112,7 +115,9 @@ export const deleteRelease = async(req,res) =>{
         }
 
        const deleteRelease = await ReleaseModel.findByIdAndDelete(releaseId)
-
+       
+       await ApplicationModel.findByIdAndUpdate({_id : isReleaseIdInDb.applicationId},{$pull: {release : releaseId}})
+       console.log("applicationId",isReleaseIdInDb.applicationId)
        return res.json({
         message : "release deleted successfully",
         data : deleteRelease,
